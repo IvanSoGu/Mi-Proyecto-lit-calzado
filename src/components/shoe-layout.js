@@ -64,7 +64,6 @@ export class Layout extends LitElement {
   render() {
     return html`
             <h1>FILTER</h1>
-            <button @click=${()=> this.filterReset()}>RESET</button>
             <h3>CATEGORY</h3>
             ${
               this.categoriesWrapper
@@ -182,27 +181,12 @@ export class Layout extends LitElement {
     )
   }
 
-  filterReset(){
-    this.dispatchEvent(
-      new CustomEvent('filter-reset', {
-        bubbles: true,
-        composed: true,
-      })
-    );
-  }
-
   filter(type, object, activated) {
     this.activateFilter(type, object, activated);
     if(!activated){
-      this.dispatchEvent(
-        new CustomEvent('filter-selected', {
-          bubbles: true,
-          composed: true,
-          detail: { type, object },
-        })
-      );
+      this.customDispatchEvent('filter-selected', type, object);
     }else{
-      this.filterReset();
+      this.customDispatchEvent('filter-reset');
     }
   }
 
@@ -215,25 +199,7 @@ export class Layout extends LitElement {
         this.filterStatusChange("categoriesWrapper", object, !activated);
         break;
       case "size":
-        if(activated===true){
-          let i=0;
-          this.sizesWrapper.forEach(size=>{
-            if(size[0]===object){
-              this.sizesWrapper[i][1]=false;
-              this.requestUpdate();
-            }
-            i+=1;
-          });
-        }else{
-          let i=0;
-          this.sizesWrapper.forEach(size=>{
-            if(size[0]===object){
-              this.sizesWrapper[i][1]=true;
-              this.requestUpdate();
-            }
-            i+=1;
-          });
-        }
+        this.filterStatusChange("sizesWrapper", object, !activated);
         break;
       default:
         console.log("Error, no filter type selected");
@@ -249,6 +215,16 @@ export class Layout extends LitElement {
       }
       i+=1;
     });
+  }
+
+  customDispatchEvent(event, type, object){
+    this.dispatchEvent(
+      new CustomEvent(event, {
+        bubbles: true,
+        composed: true,
+        detail: { type, object },
+      })
+    )
   }
 }
 

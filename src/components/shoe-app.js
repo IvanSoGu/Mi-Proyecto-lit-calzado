@@ -7,6 +7,7 @@ import './shoe-home.js';
 import './shoe-layout.js';
 import './shoe-link.js';
 import './shoe-main.js';
+import './shoe-user.js';
 
 class App extends router(LitElement) {
   static get properties() {
@@ -14,7 +15,6 @@ class App extends router(LitElement) {
       filter: { type: Array },
       filterType: { type: String },
       params: { type: Object },
-      query: { type: Object },
       shoeSelected: { type: Object },
       route: { type: String },
     };
@@ -59,11 +59,14 @@ class App extends router(LitElement) {
       {
         name: 'home',
         pattern: '',
-        data: { title: 'Home' },
       },
       {
         name: 'detail',
         pattern: 'detail/:id',
+      },
+      {
+        name: 'user',
+        pattern: 'user',
       },
       {
         name: 'not-found',
@@ -77,15 +80,13 @@ class App extends router(LitElement) {
     this.filter = [];
     this.filterType = '';
     this.params = {};
-    this.query = {};
     this.route = '';
     this.shoeSelected = {};
   }
 
-  router(route, params, query) {
+  router(route, params) {
     this.route = route;
     this.params = params;
-    this.query = query;
   }
 
   render() {
@@ -100,7 +101,7 @@ class App extends router(LitElement) {
             .filter=${this.filter}
             .filterType=${this.filterType}
           ></shoe-home>
-          <h1 route="info">Info ${this.query.data}</h1>
+          <shoe-user route="user"></shoe-user>
           <shoe-detail route="detail" .shoe=${this.shoeSelected}></shoe-detail>
           <h1 route="not-found">Not Found</h1>
         </shoe-main>
