@@ -52,7 +52,7 @@ export class Home extends navigator(LitElement) {
     this.repeated = false;
     this.shoeList = [];
     this.url =
-      'https://my-json-server.typicode.com/claumartinezh/training-db/shoes';
+      'https://my-json-server.typicode.com/IvanSoGu/fake-json-server/shoes';
   }
 
   render() {
