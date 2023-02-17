@@ -5,11 +5,11 @@ import { navigator } from 'lit-element-router';
 export class Home extends navigator(LitElement) {
   static get properties() {
     return {
-      filter: { type: Array },
-      filterType: { type: String },
       filteredList: { type: Array },
       repeated: { type: Boolean},
       shoeList: { type: Array },
+      shoeListFilter: { type: String },
+      shoeListFilterType: { type: String },
       url: { type: String },
     };
   }
@@ -46,11 +46,11 @@ export class Home extends navigator(LitElement) {
 
   constructor() {
     super();
-    this.filter = [];
     this.filteredList = [];
-    this.filterType = '';
     this.repeated = false;
     this.shoeList = [];
+    this.shoeListFilter = '';
+    this.shoeListFilterType = '';
     this.url =
       'https://my-json-server.typicode.com/IvanSoGu/fake-json-server/shoes';
   }
@@ -82,8 +82,8 @@ export class Home extends navigator(LitElement) {
   }
 
   updated() {
-    if (this.filter) {
-      this.filterByAny(this.filterType, this.filter);
+    if (this.shoeListFilter) {
+      this.filterByAny(this.shoeListFilterType, this.shoeListFilter);
     }
   }
 
@@ -113,7 +113,7 @@ export class Home extends navigator(LitElement) {
   filterByAny(type, filter) {
     if(type==="reset"){
       this.shoeList.forEach(shoe=> this.filteredList.push(shoe))
-      this.filterType=false;
+      this.shoeListFilterType=false;
     }else{
       this.filteredList.length = 0;
       if(type!=="size"){
@@ -140,7 +140,7 @@ export class Home extends navigator(LitElement) {
       }
     }
     // Do NOT dare to take this out
-    this.filter=false;
+    this.shoeListFilter=false;
   }
 }
 

@@ -12,11 +12,12 @@ import './shoe-user.js';
 class App extends router(LitElement) {
   static get properties() {
     return {
-      filter: { type: Array },
-      filterType: { type: String },
       params: { type: Object },
-      shoeSelected: { type: Object },
       route: { type: String },
+      shoeListFilter: { type: String },
+      shoeListFilterType: { type: String },
+      shoeSelected: { type: Object },
+      user: { type: String },
     };
   }
 
@@ -77,11 +78,12 @@ class App extends router(LitElement) {
 
   constructor() {
     super();
-    this.filter = [];
-    this.filterType = '';
     this.params = {};
     this.route = '';
+    this.shoeListFilter = '';
+    this.shoeListFilterType = '';
     this.shoeSelected = {};
+    this.user='';
   }
 
   router(route, params) {
@@ -92,16 +94,20 @@ class App extends router(LitElement) {
   render() {
     return html`
       <shoe-header></shoe-header>
+      ${this.user
+        ? html `
+        <h1>Hellouda ${this.user.name} !</h1>`
+      :''} 
       <div id="main-container">
         <shoe-layout @filter-selected=${this.handleSelectedFilter} @filter-reset=${this.resetFilter}></shoe-layout>
         <shoe-main active-route=${this.route}>
           <shoe-home
             route="home"
             @shoe-selected=${this.handleSelectedShoe}
-            .filter=${this.filter}
-            .filterType=${this.filterType}
+            .shoeListFilter=${this.shoeListFilter}
+            .shoeListFilterType=${this.shoeListFilterType}
           ></shoe-home>
-          <shoe-user route="user"></shoe-user>
+          <shoe-user @user-selected=${this.handleSelectedUser} route="user"></shoe-user>
           <shoe-detail route="detail" .shoe=${this.shoeSelected}></shoe-detail>
           <h1 route="not-found">Not Found</h1>
         </shoe-main>
@@ -115,13 +121,17 @@ class App extends router(LitElement) {
   }
 
   handleSelectedFilter(ev){
-    this.filterType=ev.detail.type;
-    this.filter=ev.detail.object;
+    this.shoeListFilterType=ev.detail.type;
+    this.shoeListFilter=ev.detail.object;
+  }
+
+  handleSelectedUser(ev){
+    this.user=ev.detail;
   }
 
   resetFilter(){
-    this.filterType="reset"
-    this.filter={};
+    this.shoeListFilterType="reset"
+    this.shoeListFilter='reset';
   }
 }
 

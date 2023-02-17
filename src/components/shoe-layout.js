@@ -32,6 +32,12 @@ export class Layout extends LitElement {
       width: calc(20px + 18vmin);
     }
 
+    button:hover {
+      background-color: #ffffff;
+      border: 1px solid #000000;
+      color: #626262;
+    }
+
     .size {
       border: 1px solid black;
       padding: 2%;
@@ -39,6 +45,11 @@ export class Layout extends LitElement {
 
     .true {
       background-color:green;
+    }
+
+    .true:hover {
+      background-color:#ffffff;
+      color: green;
     }
 
     #size-container {
