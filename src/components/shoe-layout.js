@@ -221,7 +221,7 @@ export class Layout extends LitElement {
   filterStatusChange(list, object, status){
     let i=0;
     this[list].forEach(element=>{
-      if(element[0]===object){
+      if(element.name===object){
         this[list][i].active=status;
         this.requestUpdate();
       }
