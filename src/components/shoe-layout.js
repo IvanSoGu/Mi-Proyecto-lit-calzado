@@ -195,12 +195,11 @@ export class Layout extends LitElement {
 
   filter(type, object, activated) {
     this.activateFilter(type, object, activated);
-    // if(!activated){
-    //   this.customDispatchEvent('filter-selected', type, object);
-    // }else{
-    //   this.customDispatchEvent('filter-reset');
-    // }
-    this.customDispatchEvent('filter-selected', type, object);
+    if(!activated){
+      this.customDispatchEvent('filter-selected', type, object);
+    }else{
+      this.customDispatchEvent('filter-reset');
+    }
   }
 
   activateFilter(type, object, activated){
