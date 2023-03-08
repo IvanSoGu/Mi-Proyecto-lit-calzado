@@ -222,7 +222,7 @@ export class Layout extends LitElement {
     let i=0;
     this[list].forEach(element=>{
       if(element[0]===object){
-        this[list][i][1]=status;
+        this[list][i].active=status;
         this.requestUpdate();
       }
       i+=1;
