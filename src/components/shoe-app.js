@@ -17,7 +17,7 @@ class App extends router(LitElement) {
       shoeListFilter: { type: String },
       shoeListFilterType: { type: String },
       shoeSelected: { type: Object },
-      user: { type: String },
+      user: { type: Object },
     };
   }
 
@@ -83,7 +83,10 @@ class App extends router(LitElement) {
     this.shoeListFilter = '';
     this.shoeListFilterType = '';
     this.shoeSelected = {};
-    this.user='';
+    this.user={};
+    this.user.log=false;
+    this.user.name='';
+    this.user.password='';
   }
 
   router(route, params) {
@@ -94,23 +97,30 @@ class App extends router(LitElement) {
   render() {
     return html`
       <shoe-header></shoe-header>
-      ${this.user
-        ? html `
-        <h1>Hellouda ${this.user.name} !</h1>`
-      :''} 
+
       <div id="main-container">
         <shoe-layout @filter-selected=${this.handleSelectedFilter} @filter-reset=${this.resetFilter}></shoe-layout>
-        <shoe-main active-route=${this.route}>
+        <div>
+          ${this.user.log
+            ? html `
+            <h1>Welcome ${this.user.name}!</h1>`
+          :''}
+          <shoe-main active-route=${this.route}>
           <shoe-home
             route="home"
             @shoe-selected=${this.handleSelectedShoe}
             .shoeListFilter=${this.shoeListFilter}
             .shoeListFilterType=${this.shoeListFilterType}
           ></shoe-home>
-          <shoe-user @user-selected=${this.handleSelectedUser} route="user"></shoe-user>
+          <shoe-user 
+            route="user"
+            @user-logged=${this.handleSelectedUser}
+            @user-logout=${this.handleLogout} 
+          ></shoe-user>
           <shoe-detail route="detail" .shoe=${this.shoeSelected}></shoe-detail>
           <h1 route="not-found">Not Found</h1>
         </shoe-main>
+        </div>
       </div>
     `;
   }
@@ -127,6 +137,10 @@ class App extends router(LitElement) {
 
   handleSelectedUser(ev){
     this.user=ev.detail;
+  }
+
+  handleLogout(){
+    this.user={...this.user, name:'', password:'', log:false};
   }
 
   resetFilter(){
