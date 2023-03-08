@@ -40,11 +40,11 @@ class App extends router(LitElement) {
       width: 30%;
     }
 
-    shoe-main{
+    #main-container{
       width: 65%;
     }
 
-    #main-container {
+    #main-layout-container {
       display: flex;
       flex-direction: row;
       width: 96%;
@@ -60,6 +60,10 @@ class App extends router(LitElement) {
       {
         name: 'home',
         pattern: '',
+      },
+      {
+        name: 'cart',
+        pattern: 'cart',
       },
       {
         name: 'detail',
@@ -98,27 +102,28 @@ class App extends router(LitElement) {
     return html`
       <shoe-header></shoe-header>
 
-      <div id="main-container">
+      <div id="main-layout-container">
         <shoe-layout @filter-selected=${this.handleSelectedFilter} @filter-reset=${this.resetFilter}></shoe-layout>
-        <div>
+        <div id="main-container">
           ${this.user.log
             ? html `
             <h1>Welcome ${this.user.name}!</h1>`
           :''}
           <shoe-main active-route=${this.route}>
-          <shoe-home
-            route="home"
-            @shoe-selected=${this.handleSelectedShoe}
-            .shoeListFilter=${this.shoeListFilter}
-            .shoeListFilterType=${this.shoeListFilterType}
-          ></shoe-home>
-          <shoe-user 
-            route="user"
-            @user-logged=${this.handleSelectedUser}
-            @user-logout=${this.handleLogout} 
-          ></shoe-user>
-          <shoe-detail route="detail" .shoe=${this.shoeSelected}></shoe-detail>
-          <h1 route="not-found">Not Found</h1>
+            <shoe-cart route="cart"></shoe-cart>
+            <shoe-detail route="detail" .shoe=${this.shoeSelected}></shoe-detail>
+            <shoe-home
+              route="home"
+              @shoe-selected=${this.handleSelectedShoe}
+              .shoeListFilter=${this.shoeListFilter}
+              .shoeListFilterType=${this.shoeListFilterType}
+            ></shoe-home>
+            <shoe-user 
+              route="user"
+              @user-logged=${this.handleSelectedUser}
+              @user-logout=${this.handleLogout} 
+            ></shoe-user>
+            <h1 route="not-found">Not Found</h1>
         </shoe-main>
         </div>
       </div>

@@ -21,7 +21,9 @@ export class Layout extends LitElement {
 
   static styles = css`
     :host{
-        margin: 2% 3%;
+      display: flex;
+      flex-direction: column;
+      margin: 2% 3%;
     }
 
     button {

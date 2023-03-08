@@ -21,6 +21,8 @@ export class Home extends navigator(LitElement) {
   static styles = css`
     :host {
       color: #000000;
+      display: flex;
+      flex-wrap: wrap;
       text-align: center;
     }
 
