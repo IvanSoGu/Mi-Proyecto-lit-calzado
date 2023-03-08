@@ -71,6 +71,10 @@ export class Layout extends LitElement {
       'https://my-json-server.typicode.com/claumartinezh/training-db/shoes';
   }
 
+  firstUpdated() {
+    this.fetchAll();
+  }
+
   render() {
     return html`
             <h1>FILTER</h1>
@@ -128,80 +132,6 @@ export class Layout extends LitElement {
             `;
   }
 
-  firstUpdated() {
-    this.fetchAll();
-  }
-
-  fetchAll() {
-    let repeated = false;
-    fetch(this.url)
-      .then(response => response.json())
-      .then(data => {
-        data.forEach(shoe => {
-          repeated = false;
-          this.categories.forEach(category => {
-            if (category === shoe.category) {
-              repeated = true;
-            }
-          });
-          if (!repeated) {
-            this.categories.push(shoe.category);
-          }
-          shoe.size.forEach(shoeSize => {
-            repeated = false;
-            if (this.sizes.length > 0) {
-              this.sizes.forEach(sizes => {
-                if (sizes === shoeSize) {
-                  repeated = true;
-                }
-              });
-            }
-            if (!repeated) {
-              this.sizes.push(shoeSize);
-            }
-          });
-          repeated = false;
-          this.brands.forEach(brand => {
-            if (brand === shoe.brand) {
-              repeated = true;
-            }
-          });
-          if (!repeated) {
-            this.brands.push(shoe.brand);
-          }
-        });
-        this.requestUpdate();
-        this.sortAll();
-      })
-      .catch(error => {
-        console.log('Error on fetch!', error);
-      });
-  }
-
-  sortAll() {
-    this.brands.sort();
-    this.categories.sort();
-    this.sizes.sort();
-    this.brands.forEach(brand=>
-      this.brandsWrapper.push({name:brand, active:false})
-    )
-    this.categories.forEach(category=>
-      this.categoriesWrapper.push({name:category, active:false})
-    )
-    this.sizes.forEach(size=>
-      this.sizesWrapper.push({name:size, active:false}) 
-    )
-  }
-
-  filter(type, object, activated) {
-    this.activateFilter(type, object, activated);
-    if(!activated){
-      this.customDispatchEvent('filter-selected', type, object);
-    }else{
-      this.customDispatchEvent('filter-reset');
-    }
-  }
-
   activateFilter(type, object, activated){
     switch(type){
       case "brand":
@@ -218,6 +148,82 @@ export class Layout extends LitElement {
     }
   }
 
+  customDispatchEvent(event, type, object){
+    this.dispatchEvent(
+      new CustomEvent(event, {
+        bubbles: true,
+        composed: true,
+        detail: { type, object },
+      })
+    )
+  }
+
+  fetchAll() {
+    fetch(this.url)
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(shoe => {
+          this.fetchCategories(shoe);
+          shoe.size.forEach(shoeSize => {
+            this.fetchSizes(shoeSize);
+          });
+          this.fetchBrands(shoe);
+        });
+        this.requestUpdate();
+        this.sortAll();
+      })
+      .catch(error => {
+        console.log('Error on fetch!', error);
+      });
+  }
+
+  fetchBrands(shoe) {
+    let repeated = false;
+    this.brands.forEach(brand => {
+      if (brand === shoe.brand) {
+        repeated = true;
+      }
+    });
+    if (!repeated) {
+      this.brands.push(shoe.brand);
+    }
+  }
+
+  fetchCategories(shoe){
+    let repeated = false;
+    this.categories.forEach(category => {
+      if (category === shoe.category) {
+        repeated = true;
+      }
+    });
+    if (!repeated) {
+      this.categories.push(shoe.category);
+    }
+  }
+
+  fetchSizes(shoeSize){
+    let repeated = false;
+    if (this.sizes.length > 0) {
+      this.sizes.forEach(sizes => {        
+        if (sizes === shoeSize) {
+          repeated = true;
+        }        
+      });     
+    }     
+    if (!repeated) {
+      this.sizes.push(shoeSize);        
+    }
+  }
+
+  filter(type, object, activated) {
+    this.activateFilter(type, object, activated);
+    if(!activated){
+      this.customDispatchEvent('filter-selected', type, object);
+    }else{
+      this.customDispatchEvent('filter-reset');
+    }
+  }
+
   filterStatusChange(list, object, status){
     let i=0;
     this[list].forEach(element=>{
@@ -229,13 +235,18 @@ export class Layout extends LitElement {
     });
   }
 
-  customDispatchEvent(event, type, object){
-    this.dispatchEvent(
-      new CustomEvent(event, {
-        bubbles: true,
-        composed: true,
-        detail: { type, object },
-      })
+  sortAll() {
+    this.brands.sort();
+    this.categories.sort();
+    this.sizes.sort();
+    this.brands.forEach(brand=>
+      this.brandsWrapper.push({name:brand, active:false})
+    )
+    this.categories.forEach(category=>
+      this.categoriesWrapper.push({name:category, active:false})
+    )
+    this.sizes.forEach(size=>
+      this.sizesWrapper.push({name:size, active:false}) 
     )
   }
 }
