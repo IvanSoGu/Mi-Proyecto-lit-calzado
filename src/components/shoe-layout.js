@@ -7,8 +7,6 @@ export class Layout extends LitElement {
       brandsWrapper: { type: Array},
       categories: { type: Array },
       categoriesWrapper: { type: Array },
-      filteredList: { type: Array },
-      repeated: { type: Boolean },
       sizes: { type: Array },
       sizesWrapper: { type: Array },
       url: { type: String },
@@ -69,7 +67,6 @@ export class Layout extends LitElement {
     this.categoriesWrapper = [];
     this.sizes = [];
     this.sizesWrapper = [];
-    this.repeated = false;
     this.url =
       'https://my-json-server.typicode.com/claumartinezh/training-db/shoes';
   }
@@ -84,10 +81,10 @@ export class Layout extends LitElement {
                     ${this.categoriesWrapper.map(
                       category =>
                         html`<button
-                          @click=${() => this.filter('category', category[0], category[1])}
-                          class=${category[1]}
+                          @click=${() => this.filter('category', category.name, category.active)}
+                          class=${category.active}
                         >
-                          ${category[0]}
+                          ${category.name}
                         </button>`
                     )}
                   `
@@ -101,10 +98,10 @@ export class Layout extends LitElement {
                       ${this.sizesWrapper.map(
                         size =>
                           html`<button
-                            @click=${() => this.filter('size', size[0], size[1])}
-                            class="size ${size[1]}"
+                            @click=${() => this.filter('size', size.name, size.active)}
+                            class="size ${size.active}"
                           >
-                            ${size[0]}
+                            ${size.name}
                           </button>`
                       )}
                     </div>
@@ -119,10 +116,10 @@ export class Layout extends LitElement {
                     ${this.brandsWrapper.map(
                       brand =>
                         html`<button
-                          @click=${() => this.filter('brand', brand[0], brand[1])}
-                          class=${brand[1]}
+                          @click=${() => this.filter('brand', brand.name, brand.active)}
+                          class=${brand.active}
                         >
-                          ${brand[0]}
+                          ${brand.name}
                         </button>`
                     )}
                   `
@@ -136,42 +133,44 @@ export class Layout extends LitElement {
   }
 
   fetchAll() {
+    let repeated = false;
     fetch(this.url)
       .then(response => response.json())
       .then(data => {
         data.forEach(shoe => {
-          this.repeated = false;
+          repeated = false;
           this.categories.forEach(category => {
             if (category === shoe.category) {
-              this.repeated = true;
+              repeated = true;
             }
           });
-          if (!this.repeated) {
+          if (!repeated) {
             this.categories.push(shoe.category);
           }
           shoe.size.forEach(shoeSize => {
-            this.repeated = false;
+            repeated = false;
             if (this.sizes.length > 0) {
               this.sizes.forEach(sizes => {
                 if (sizes === shoeSize) {
-                  this.repeated = true;
+                  repeated = true;
                 }
               });
             }
-            if (!this.repeated) {
+            if (!repeated) {
               this.sizes.push(shoeSize);
             }
           });
-          this.repeated = false;
+          repeated = false;
           this.brands.forEach(brand => {
             if (brand === shoe.brand) {
-              this.repeated = true;
+              repeated = true;
             }
           });
-          if (!this.repeated) {
+          if (!repeated) {
             this.brands.push(shoe.brand);
           }
         });
+        this.requestUpdate();
         this.sortAll();
       })
       .catch(error => {
@@ -184,13 +183,13 @@ export class Layout extends LitElement {
     this.categories.sort();
     this.sizes.sort();
     this.brands.forEach(brand=>
-      this.brandsWrapper.push({0:brand, 1:false})
+      this.brandsWrapper.push({name:brand, active:false})
     )
     this.categories.forEach(category=>
-      this.categoriesWrapper.push({0:category,1:false})
+      this.categoriesWrapper.push({name:category, active:false})
     )
     this.sizes.forEach(size=>
-      this.sizesWrapper.push({0:size, 1:false}) 
+      this.sizesWrapper.push({name:size, active:false}) 
     )
   }
 
@@ -223,7 +222,7 @@ export class Layout extends LitElement {
     let i=0;
     this[list].forEach(element=>{
       if(element[0]===object){
-        this[list][i][1]=status;
+        this[list][i].active=status;
         this.requestUpdate();
       }
       i+=1;
