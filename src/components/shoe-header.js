@@ -34,7 +34,7 @@ export class Header extends LitElement {
             <div>
                 <shoe-link href="/"><img src="src/img/home-logo.png" width=51px alt="Home logo"></shoe-link>
                 <shoe-link href="/user"><img src="src/img/user-logo.png" width=51px alt="User logo"></shoe-link>
-                <shoe-link href="/"><img src="src/img/Shopping-cart-icon.png" width=51px alt="Cart logo"></shoe-link>
+                <shoe-link href="/cart"><img src="src/img/Shopping-cart-icon.png" width=51px alt="Cart logo"></shoe-link>
             </div>
         `;
     }
