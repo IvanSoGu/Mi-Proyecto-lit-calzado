@@ -7,8 +7,6 @@ export class Layout extends LitElement {
       brandsWrapper: { type: Array},
       categories: { type: Array },
       categoriesWrapper: { type: Array },
-      filteredList: { type: Array },
-      repeated: { type: Boolean },
       sizes: { type: Array },
       sizesWrapper: { type: Array },
       url: { type: String },
@@ -69,7 +67,6 @@ export class Layout extends LitElement {
     this.categoriesWrapper = [];
     this.sizes = [];
     this.sizesWrapper = [];
-    this.repeated = false;
     this.url =
       'https://my-json-server.typicode.com/claumartinezh/training-db/shoes';
   }
@@ -136,42 +133,44 @@ export class Layout extends LitElement {
   }
 
   fetchAll() {
+    let repeated = false;
     fetch(this.url)
       .then(response => response.json())
       .then(data => {
         data.forEach(shoe => {
-          this.repeated = false;
+          repeated = false;
           this.categories.forEach(category => {
             if (category === shoe.category) {
-              this.repeated = true;
+              repeated = true;
             }
           });
-          if (!this.repeated) {
+          if (!repeated) {
             this.categories.push(shoe.category);
           }
           shoe.size.forEach(shoeSize => {
-            this.repeated = false;
+            repeated = false;
             if (this.sizes.length > 0) {
               this.sizes.forEach(sizes => {
                 if (sizes === shoeSize) {
-                  this.repeated = true;
+                  repeated = true;
                 }
               });
             }
-            if (!this.repeated) {
+            if (!repeated) {
               this.sizes.push(shoeSize);
             }
           });
-          this.repeated = false;
+          repeated = false;
           this.brands.forEach(brand => {
             if (brand === shoe.brand) {
-              this.repeated = true;
+              repeated = true;
             }
           });
-          if (!this.repeated) {
+          if (!repeated) {
             this.brands.push(shoe.brand);
           }
         });
+        this.requestUpdate();
         this.sortAll();
       })
       .catch(error => {
@@ -196,11 +195,12 @@ export class Layout extends LitElement {
 
   filter(type, object, activated) {
     this.activateFilter(type, object, activated);
-    if(!activated){
-      this.customDispatchEvent('filter-selected', type, object);
-    }else{
-      this.customDispatchEvent('filter-reset');
-    }
+    // if(!activated){
+    //   this.customDispatchEvent('filter-selected', type, object);
+    // }else{
+    //   this.customDispatchEvent('filter-reset');
+    // }
+    this.customDispatchEvent('filter-selected', type, object);
   }
 
   activateFilter(type, object, activated){
