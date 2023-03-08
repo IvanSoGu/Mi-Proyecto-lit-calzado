@@ -81,10 +81,10 @@ export class Layout extends LitElement {
                     ${this.categoriesWrapper.map(
                       category =>
                         html`<button
-                          @click=${() => this.filter('category', category[0], category[1])}
-                          class=${category[1]}
+                          @click=${() => this.filter('category', category.name, category.active)}
+                          class=${category.active}
                         >
-                          ${category[0]}
+                          ${category.name}
                         </button>`
                     )}
                   `
@@ -98,10 +98,10 @@ export class Layout extends LitElement {
                       ${this.sizesWrapper.map(
                         size =>
                           html`<button
-                            @click=${() => this.filter('size', size[0], size[1])}
-                            class="size ${size[1]}"
+                            @click=${() => this.filter('size', size.name, size.active)}
+                            class="size ${size.active}"
                           >
-                            ${size[0]}
+                            ${size.name}
                           </button>`
                       )}
                     </div>
@@ -116,10 +116,10 @@ export class Layout extends LitElement {
                     ${this.brandsWrapper.map(
                       brand =>
                         html`<button
-                          @click=${() => this.filter('brand', brand[0], brand[1])}
-                          class=${brand[1]}
+                          @click=${() => this.filter('brand', brand.name, brand.active)}
+                          class=${brand.active}
                         >
-                          ${brand[0]}
+                          ${brand.name}
                         </button>`
                     )}
                   `
@@ -183,13 +183,13 @@ export class Layout extends LitElement {
     this.categories.sort();
     this.sizes.sort();
     this.brands.forEach(brand=>
-      this.brandsWrapper.push({0:brand, 1:false})
+      this.brandsWrapper.push({name:brand, active:false})
     )
     this.categories.forEach(category=>
-      this.categoriesWrapper.push({0:category,1:false})
+      this.categoriesWrapper.push({name:category, active:false})
     )
     this.sizes.forEach(size=>
-      this.sizesWrapper.push({0:size, 1:false}) 
+      this.sizesWrapper.push({name:size, active:false}) 
     )
   }
 
