@@ -36,11 +36,11 @@ class App extends router(LitElement) {
     }
 
     shoe-layout{
-      width: 30%;
+      width: 20%;
     }
 
     #main-container{
-      width: 65%;
+      width: 75%;
     }
 
     #main-layout-container {

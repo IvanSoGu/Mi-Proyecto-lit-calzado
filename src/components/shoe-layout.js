@@ -22,6 +22,7 @@ export class Layout extends LitElement {
       display: flex;
       flex-direction: column;
       margin: 2% 3%;
+      text-align: center;
     }
 
     button {
@@ -29,7 +30,7 @@ export class Layout extends LitElement {
       border: 1px solid #000000;
       color: #ffffff;
       font-size: calc(7px + 2vmin);
-      width: calc(20px + 18vmin);
+      width: 100%;
     }
 
     button:hover {
@@ -50,12 +51,6 @@ export class Layout extends LitElement {
     .true:hover {
       background-color:#ffffff;
       color: green;
-    }
-
-    #size-container {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
     }
   `;
 
@@ -98,7 +93,6 @@ export class Layout extends LitElement {
             ${
               this.sizesWrapper
                 ? html`
-                    <div id="size-container">
                       ${this.sizesWrapper.map(
                         size =>
                           html`<button
@@ -108,7 +102,6 @@ export class Layout extends LitElement {
                             ${size.name}
                           </button>`
                       )}
-                    </div>
                   `
                 : ''
             }
