@@ -1,17 +1,14 @@
-/* eslint-disable lit-a11y/click-events-have-key-events */
 import { LitElement, html, css } from 'lit';
 import { navigator } from 'lit-element-router';
 
 export class Home extends navigator(LitElement) {
   static get properties() {
     return {
-      filteredList: { type: Array },
+      filteredShoeList: { type: Array },
       externalUpdated: { type: Boolean },
-      previousShoeListFilter: { type: String },
-      previousShoeListFilterType: { type: String },
+      previousShoeListFilterList: { type: Array },
       shoeList: { type: Array },
-      shoeListFilter: { type: String },
-      shoeListFilterType: { type: String },
+      shoeListFilterList: { type: Array },
       url: { type: String },
     };
   }
@@ -50,13 +47,11 @@ export class Home extends navigator(LitElement) {
 
   constructor() {
     super();
-    this.filteredList = [];
-    this.externalUpdated = false;
-    this.previousShoeListFilter = '';
-    this.previousShoeListFilterType = '';
+    this.filteredShoeList = [];
+    this.externalUpdated = true;
+    this.previousShoeListFilterList = [];
     this.shoeList = [];
-    this.shoeListFilter = '';
-    this.shoeListFilterType = '';
+    this.shoeListFilterList = [];
     this.url =
       'https://my-json-server.typicode.com/IvanSoGu/fake-json-server/shoes';
   }
@@ -64,8 +59,8 @@ export class Home extends navigator(LitElement) {
   render() {
     return html`
       <div class="row">
-        ${this.filteredList.length > 0
-          ? this.filteredList.map(
+        ${this.filteredShoeList.length > 0
+          ? this.filteredShoeList.map(
               shoe => html`
                 <div class="column" @click="${() => this.handleClick(shoe)}">
                   <img
@@ -88,16 +83,14 @@ export class Home extends navigator(LitElement) {
   }
 
   updated() {
-    this.previousShoeListFilter!==this.shoeListFilter?
-      this.externalUpdated=true
-      :this.externalUpdated=false;
-    this.previousShoeListFilterType!==this.shoeListFilterType?
-      this.externalUpdated=true
-      :this.externalUpdated=false;
+    console.log("From HOME - updated");
+    this.previousShoeListFilterList !== this.shoeListFilterList
+      ? (this.externalUpdated = true)
+      : (this.externalUpdated = false);
     if (this.externalUpdated) {
-      this.filterByAny(this.shoeListFilterType, this.shoeListFilter);
-      this.previousShoeListFilter=this.shoeListFilter;
-      this.previousShoeListFilterType=this.shoeListFilterType;
+      console.log("External Update");
+      this.filterByAny();
+      this.previousShoeListFilterList = this.shoeListFilterList;
     }
   }
 
@@ -106,7 +99,7 @@ export class Home extends navigator(LitElement) {
       .then(response => response.json())
       .then(data => {
         this.shoeList = [].concat(data);
-        this.filteredList = [].concat(data);
+        this.filteredShoeList = [].concat(data);
       })
       .catch(error => {
         console.log('Error on fetch!', error);
@@ -124,36 +117,37 @@ export class Home extends navigator(LitElement) {
     this.navigate(`/detail/${shoe.id}`);
   }
 
-  filterByAny(type, filter) {
-    if(type==="reset"){
-      this.shoeList.forEach(shoe=> this.filteredList.push(shoe))
-      this.shoeListFilterType=false;
-    }else{
-      this.filteredList.length = 0;
-      if(type!=="size"){
-        this.shoeList.forEach(shoe => {
-          if (shoe[type] === filter) {
-            this.filteredList.push(shoe);
-          }
-        });
-      }else{
-        this.shoeList.forEach(shoe=>{
-          shoe.size.forEach(size=>{
-            if(filter===size){
-              let repeated = false;
-              this.filteredList.forEach(listedShoe=>{
-                if(listedShoe===shoe){
-                  repeated=true;   
-                }
-              })
-              if(!repeated){
-                this.filteredList.push(shoe);
-              }
+  filterByAny() {
+    this.filteredShoeList.length = 0;
+    if(this.shoeListFilterList.length>0){
+      this.shoeListFilterList.forEach(filter=>{
+        if (filter.type !== 'size') {
+          this.shoeList.forEach(shoe => {
+            if (shoe[filter.type] === filter.object) {
+              this.filteredShoeList.push(shoe);
             }
-          })
-        })
-      }
-    }
+          });
+        } else {
+          this.shoeList.forEach(shoe => {
+            shoe.size.forEach(size => {
+              if (filter.object === size) {
+                let repeated = false;
+                this.filteredShoeList.forEach(listedShoe => {
+                  if (listedShoe === shoe) {
+                    repeated = true;
+                  }
+                });
+                if (!repeated) {
+                  this.filteredShoeList.push(shoe);
+                }
+              }
+            });
+          });
+        }
+      });
+      console.log("From filtered by any, filteredShoeList:");
+      console.log(this.filteredShoeList);
+    };
   }
 }
 

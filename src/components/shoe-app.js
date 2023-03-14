@@ -14,8 +14,7 @@ class App extends router(LitElement) {
     return {
       params: { type: Object },
       route: { type: String },
-      shoeListFilter: { type: String },
-      shoeListFilterType: { type: String },
+      shoeListFilterList: { type: Array},
       shoeSelected: { type: Object },
       user: { type: Object },
     };
@@ -84,8 +83,7 @@ class App extends router(LitElement) {
     super();
     this.params = {};
     this.route = '';
-    this.shoeListFilter = '';
-    this.shoeListFilterType = '';
+    this.shoeListFilterList = []
     this.shoeSelected = {};
     this.user={};
     this.user.log=false;
@@ -103,7 +101,7 @@ class App extends router(LitElement) {
       <shoe-header></shoe-header>
 
       <div id="main-layout-container">
-        <shoe-layout @filter-selected=${this.handleSelectedFilter} @filter-reset=${this.resetFilter}></shoe-layout>
+        <shoe-layout @filter-selected=${this.handleSelectedFilter} ></shoe-layout>
         <div id="main-container">
           ${this.user.log
             ? html `
@@ -115,8 +113,7 @@ class App extends router(LitElement) {
             <shoe-home
               route="home"
               @shoe-selected=${this.handleSelectedShoe}
-              .shoeListFilter=${this.shoeListFilter}
-              .shoeListFilterType=${this.shoeListFilterType}
+              .shoeListFilterList=${this.shoeListFilterList}
             ></shoe-home>
             <shoe-user 
               route="user"
@@ -136,8 +133,48 @@ class App extends router(LitElement) {
   }
 
   handleSelectedFilter(ev){
-    this.shoeListFilterType=ev.detail.type;
-    this.shoeListFilter=ev.detail.object;
+    console.log("From APP - handleSelectedFilter");
+    console.log("ev.detail.activated");
+    console.log(ev.detail.activated);
+    if(ev.detail.activated===false) {
+      console.log("Detected filter to ADD!")
+      let repeated = false;
+      this.shoeListFilterList.forEach(filter => {
+        if((filter.type===ev.detail.type&&filter.object===ev.detail.object)){
+          console.log("Repeated filter found!");
+          repeated=true}
+      })
+      if(!repeated) {
+        console.log("Repeated filter not found!");
+        let filter = {type: ev.detail.type, object: ev.detail.object};
+        this.shoeListFilterList.push(filter);
+        let copy = [];
+        this.shoeListFilterList.forEach(element=>{
+          copy.push(element);
+        });
+        this.shoeListFilterList=[];
+        copy.forEach(element=>{
+          this.shoeListFilterList.push(element);
+        })
+        console.log("this.shoeListFilterList after push:");
+        console.log(this.shoeListFilterList);
+      }
+    }else{
+      console.log("Detected filter to remove!");
+      let copy = [];
+      this.shoeListFilterList.forEach(filter => {
+        if((filter.type!==ev.detail.type)||(filter.object!==ev.detail.object)){
+          console.log("pushing...")
+          copy.push(filter);
+        }
+      })
+      console.log("copy:");
+      console.log(copy);
+      this.shoeListFilterList=[];
+      copy.forEach(filter=>this.shoeListFilterList.push(filter));
+      console.log("this.shoeListFilterList:");
+      console.log(this.shoeListFilterList);
+    };
   }
 
   handleSelectedUser(ev){
@@ -146,11 +183,6 @@ class App extends router(LitElement) {
 
   handleLogout(){
     this.user={...this.user, name:'', password:'', log:false};
-  }
-
-  resetFilter(){
-    this.shoeListFilterType="reset"
-    this.shoeListFilter='reset';
   }
 }
 
