@@ -30,17 +30,17 @@ export class Home extends navigator(LitElement) {
       font-weight: bold;
     }
 
-    .row {
+    .container {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      justify-content: space-between;
+      width: 100%;
     }
 
-    .column {
-      box-shadow: 2px 2px 2px 2px black;
-      display: flex;
-      flex-direction: column;
+    .shoe {
+      background-color: #abc4c2;
+      border: 2px solid black;
+      margin: 1%;
       width: 210px;
     }
   `;
@@ -58,11 +58,11 @@ export class Home extends navigator(LitElement) {
 
   render() {
     return html`
-      <div class="row">
+      <div class="container">
         ${this.filteredShoeList.length > 0
           ? this.filteredShoeList.map(
               shoe => html`
-                <div class="column" @click="${() => this.handleClick(shoe)}">
+                <div class="shoe" @click="${() => this.handleClick(shoe)}">
                   <img
                     src="${shoe.image}"
                     alt="${shoe.name} image"
