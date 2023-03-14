@@ -99,7 +99,6 @@ class App extends router(LitElement) {
   render() {
     return html`
       <shoe-header></shoe-header>
-
       <div id="main-layout-container">
         <shoe-layout @filter-selected=${this.handleSelectedFilter} ></shoe-layout>
         <div id="main-container">
@@ -133,47 +132,25 @@ class App extends router(LitElement) {
   }
 
   handleSelectedFilter(ev){
-    console.log("From APP - handleSelectedFilter");
-    console.log("ev.detail.activated");
-    console.log(ev.detail.activated);
     if(ev.detail.activated===false) {
-      console.log("Detected filter to ADD!")
       let repeated = false;
       this.shoeListFilterList.forEach(filter => {
         if((filter.type===ev.detail.type&&filter.object===ev.detail.object)){
-          console.log("Repeated filter found!");
           repeated=true}
       })
       if(!repeated) {
-        console.log("Repeated filter not found!");
         let filter = {type: ev.detail.type, object: ev.detail.object};
         this.shoeListFilterList.push(filter);
-        let copy = [];
-        this.shoeListFilterList.forEach(element=>{
-          copy.push(element);
-        });
-        this.shoeListFilterList=[];
-        copy.forEach(element=>{
-          this.shoeListFilterList.push(element);
-        })
-        console.log("this.shoeListFilterList after push:");
-        console.log(this.shoeListFilterList);
+        this.shoeListFilterList=[].concat(this.shoeListFilterList);
       }
     }else{
-      console.log("Detected filter to remove!");
       let copy = [];
       this.shoeListFilterList.forEach(filter => {
         if((filter.type!==ev.detail.type)||(filter.object!==ev.detail.object)){
-          console.log("pushing...")
           copy.push(filter);
         }
       })
-      console.log("copy:");
-      console.log(copy);
-      this.shoeListFilterList=[];
-      copy.forEach(filter=>this.shoeListFilterList.push(filter));
-      console.log("this.shoeListFilterList:");
-      console.log(this.shoeListFilterList);
+      this.shoeListFilterList=[].concat(copy);
     };
   }
 

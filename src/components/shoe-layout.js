@@ -149,9 +149,6 @@ export class Layout extends LitElement {
   }
 
   customDispatchEvent(type, object, activated){
-    console.log("From LAYOUT - customDispatchEvent")
-    console.log("activated:");
-    console.log(activated);
     this.dispatchEvent(
       new CustomEvent('filter-selected', {
         bubbles: true,
@@ -219,14 +216,6 @@ export class Layout extends LitElement {
   }
 
   filter(type, object, activated) {
-    console.log("From Layout - filter");
-    console.log("filter params");
-    console.log("-type:");
-    console.log(type);
-    console.log("-object:");
-    console.log(object);
-    console.log("-activated:");
-    console.log(activated);
     this.activateFilter(type, object, activated);
     this.customDispatchEvent(type, object, activated);
   }

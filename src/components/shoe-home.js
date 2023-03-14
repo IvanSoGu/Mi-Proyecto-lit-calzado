@@ -83,12 +83,10 @@ export class Home extends navigator(LitElement) {
   }
 
   updated() {
-    console.log("From HOME - updated");
     this.previousShoeListFilterList !== this.shoeListFilterList
       ? (this.externalUpdated = true)
       : (this.externalUpdated = false);
     if (this.externalUpdated) {
-      console.log("External Update");
       this.filterByAny();
       this.previousShoeListFilterList = this.shoeListFilterList;
     }
@@ -145,8 +143,8 @@ export class Home extends navigator(LitElement) {
           });
         }
       });
-      console.log("From filtered by any, filteredShoeList:");
-      console.log(this.filteredShoeList);
+    }else{
+      this.filteredShoeList=[].concat(this.shoeList)
     };
   }
 }
