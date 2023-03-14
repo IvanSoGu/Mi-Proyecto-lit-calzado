@@ -6,7 +6,9 @@ export class Home extends navigator(LitElement) {
   static get properties() {
     return {
       filteredList: { type: Array },
-      repeated: { type: Boolean},
+      externalUpdated: { type: Boolean },
+      previousShoeListFilter: { type: String },
+      previousShoeListFilterType: { type: String },
       shoeList: { type: Array },
       shoeListFilter: { type: String },
       shoeListFilterType: { type: String },
@@ -49,7 +51,9 @@ export class Home extends navigator(LitElement) {
   constructor() {
     super();
     this.filteredList = [];
-    this.repeated = false;
+    this.externalUpdated = false;
+    this.previousShoeListFilter = '';
+    this.previousShoeListFilterType = '';
     this.shoeList = [];
     this.shoeListFilter = '';
     this.shoeListFilterType = '';
@@ -84,8 +88,16 @@ export class Home extends navigator(LitElement) {
   }
 
   updated() {
-    if (this.shoeListFilter) {
+    this.previousShoeListFilter!==this.shoeListFilter?
+      this.externalUpdated=true
+      :this.externalUpdated=false;
+    this.previousShoeListFilterType!==this.shoeListFilterType?
+      this.externalUpdated=true
+      :this.externalUpdated=false;
+    if (this.externalUpdated) {
       this.filterByAny(this.shoeListFilterType, this.shoeListFilter);
+      this.previousShoeListFilter=this.shoeListFilter;
+      this.previousShoeListFilterType=this.shoeListFilterType;
     }
   }
 
@@ -128,12 +140,13 @@ export class Home extends navigator(LitElement) {
         this.shoeList.forEach(shoe=>{
           shoe.size.forEach(size=>{
             if(filter===size){
+              let repeated = false;
               this.filteredList.forEach(listedShoe=>{
                 if(listedShoe===shoe){
-                  this.repeated=true;   
+                  repeated=true;   
                 }
               })
-              if(!this.repeated){
+              if(!repeated){
                 this.filteredList.push(shoe);
               }
             }
@@ -141,8 +154,6 @@ export class Home extends navigator(LitElement) {
         })
       }
     }
-    // Do NOT dare to take this out
-    this.shoeListFilter=false;
   }
 }
 
